@@ -140,13 +140,68 @@ public class Bayespam
         readMessages(MessageType.SPAM);
 
         // Print out the hash table
-        printVocab();
+        //printVocab();
+        
+        /// Is counter_spam the right variable?
+        /*double aPrioriSpam, aPrioriNormal;
+        aPrioriSpam = vocab.counter_spam/ (vocab.counter_spam + vocab.counter_regular);
+        aPrioriNormal = vocab.counter_regular / (vocab.counter_spam + vocab.counter_regular);
+        */
+        
+        
         
         // Now all students must continue from here:
         //
         // 1) A priori class probabilities must be computed from the number of regular and spam messages
+        
+        double nMessagesRegular = listing_regular.length;
+        double nMessagesSpam = listing_spam.length;
+        double nMessagesTotal = listing_regular.length + listing_spam.length;
+        
+        double aPrioriSpam    = nMessagesSpam / nMessagesTotal;
+        double aPrioriRegular = nMessagesRegular / nMessagesTotal;
+        
+        System.out.println("a priori spam:    " + aPrioriSpam);
+        System.out.println("a priori regular: " + aPrioriRegular);
+        
+        
         // 2) The vocabulary must be clean: punctuation and digits must be removed, case insensitive
+        
+        Enumeration<String> enumKey = vocab.keys();
+        while (enumKey.hasMoreElements())
+        {
+        	String key = enumKey.nextElement();
+        	Multiple_Counter counter = vocab.get(key);
+        	
+        	String newKey = key.replaceAll("[^a-zA-Z]", "");
+        	newKey = newKey.toLowerCase();
+        	
+        	vocab.remove(key);
+        	
+        	if (newKey.length() > 4)
+        	{
+        		vocab.put(newKey, counter);
+        	}
+        }
+        
         // 3) Conditional probabilities must be computed for every word
+        
+        double nWordsRegular 	= 0;
+        double nWordsSpam 		= 0;
+        enumKey = vocab.keys();
+        
+        /// calculate the the total amount of spam and regular words
+        while (enumKey.hasMoreElements())
+        {
+        	String key = enumKey.nextElement();
+        	nWordsRegular += vocab.get(key).counter_regular;
+        	nWordsSpam += vocab.get(key).counter_spam;
+        }
+        
+        System.out.println("number of regular words : " + nWordsRegular);
+        System.out.println("number of spam words    : " + nWordsSpam);
+        
+        
         // 4) A priori probabilities must be computed for every word
         // 5) Zero probabilities must be replaced by a small estimated value
         // 6) Bayes rule must be applied on new messages, followed by argmax classification

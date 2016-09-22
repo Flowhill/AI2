@@ -10,6 +10,12 @@ public class Bayespam
     {
         NORMAL, SPAM
     }
+    /// This defines the two types of probabilities we have
+    static enum ProbType
+    {
+        PRIORI, CONDITIONAL
+    }
+
 
     // This a class with two counters (for regular and for spam)
     static class Multiple_Counter
@@ -27,6 +33,37 @@ public class Bayespam
             }
         }
     }
+    
+    /// Class for saving the conditional and a priori for every word
+        static class Multiple_Prob
+    {
+        double conditional_regular = 0;
+        double conditional_spam = 0;
+        double priori_regular = 0;
+        double priori_spam = 0;
+
+        
+        public void setProb(MessageType type, ProbType probtype, double probability)
+        {
+            if ( type == MessageType.NORMAL ){
+                if ( probtype == ProbType.PRIORI)
+                {
+					priori_regular = probability;
+				} else
+				{
+					conditional_regular = probability;
+				}
+            } else {
+				if ( probtype == ProbType.PRIORI)
+                {
+					priori_spam = probability;
+				} else
+				{
+					conditional_spam = probability;
+				}
+            }
+        }
+    }
 
     // Listings of the two subdirectories (regular/ and spam/)
     private static File[] listing_regular = new File[0];
@@ -34,7 +71,8 @@ public class Bayespam
 
     // A hash table for the vocabulary (word searching is very fast in a hash table)
     private static Hashtable <String, Multiple_Counter> vocab = new Hashtable <String, Multiple_Counter> ();
-
+	/// A hash table for the vocabulary and their probabilities
+	private static Hashtable <String, Multiple_Prob> probs = new Hashtable <String, Multiple_Prob> ();
     
     // Add a word to the vocabulary
     private static void addWord(String word, MessageType type)
@@ -158,11 +196,11 @@ public class Bayespam
         double nMessagesSpam = listing_spam.length;
         double nMessagesTotal = listing_regular.length + listing_spam.length;
         
-        double aPrioriSpam    = nMessagesSpam / nMessagesTotal;
-        double aPrioriRegular = nMessagesRegular / nMessagesTotal;
+        double aPrioriSpamMessage    = nMessagesSpam / nMessagesTotal;
+        double aPrioriRegularMessage = nMessagesRegular / nMessagesTotal;
         
-        System.out.println("a priori spam:    " + aPrioriSpam);
-        System.out.println("a priori regular: " + aPrioriRegular);
+        System.out.println("a priori spam message:    " + aPrioriSpamMessage);
+        System.out.println("a priori regular message: " + aPrioriRegularMessage);
         
         
         // 2) The vocabulary must be clean: punctuation and digits must be removed, case insensitive
@@ -185,6 +223,7 @@ public class Bayespam
         }
         
         // 3) Conditional probabilities must be computed for every word
+        // 4) A priori probabilities must be computed for every word
         
         double nWordsRegular 	= 0;
         double nWordsSpam 		= 0;
@@ -197,12 +236,38 @@ public class Bayespam
         	nWordsRegular += vocab.get(key).counter_regular;
         	nWordsSpam += vocab.get(key).counter_spam;
         }
-        
+        double nWordsTotal = nWordsRegular + nWordsSpam;
         System.out.println("number of regular words : " + nWordsRegular);
         System.out.println("number of spam words    : " + nWordsSpam);
         
+        enumKey = vocab.keys();
+        while (enumKey.hasMoreElements())
+        {
+			String key = enumKey.nextElement();
+			Multiple_Prob prob = new Multiple_Prob ();
+			
+			double ConditionalSpam = vocab.get(key).counter_spam / nWordsSpam;
+			double ConditionalRegular = vocab.get(key).counter_regular / nWordsRegular;
+			double aPrioriSpam = vocab.get(key).counter_spam / nWordsTotal;
+			double aPrioriRegular = vocab.get(key).counter_regular / nWordsTotal;
+			
+			prob.setProb(MessageType.SPAM, ProbType.CONDITIONAL, ConditionalSpam);
+			prob.setProb(MessageType.NORMAL, ProbType.CONDITIONAL, ConditionalRegular);
+			prob.setProb(MessageType.SPAM, ProbType.PRIORI, aPrioriSpam);
+			prob.setProb(MessageType.NORMAL, ProbType.PRIORI, aPrioriRegular);
+			
+			System.out.println(key + "	:");
+			System.out.println("The conditional probability for a spam word is	:" + ConditionalSpam);
+			System.out.println("The conditional probability for a regular word is	:" + ConditionalRegular);
+			System.out.println("The a priori probability for a spam word is	:" + aPrioriSpam);
+			System.out.println("The a priori probability for a regular word is	:" + aPrioriRegular);
+			
+			probs.put(key, prob);
+		}
+
         
-        // 4) A priori probabilities must be computed for every word
+        
+        
         // 5) Zero probabilities must be replaced by a small estimated value
         // 6) Bayes rule must be applied on new messages, followed by argmax classification
         // 7) Errors must be computed on the test set (FAR = false accept rate (misses), FRR = false reject rate (false alarms))

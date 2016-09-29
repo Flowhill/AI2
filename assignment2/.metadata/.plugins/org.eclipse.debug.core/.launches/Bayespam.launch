@@ -7,6 +7,6 @@
 <listEntry value="1"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="bayespam.Bayespam"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="train test"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="test train"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="bayespam"/>
 </launchConfiguration>

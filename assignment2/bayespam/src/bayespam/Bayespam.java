@@ -1,6 +1,7 @@
 package bayespam;
 
 import java.io.*;
+import java.sql.Struct;
 import java.util.*;
 
 public class Bayespam
@@ -15,8 +16,13 @@ public class Bayespam
     {
         PRIORI, CONDITIONAL
     }
-
-
+    
+    /// This defines the two types of testsets we have
+    static enum SetType
+    {
+    	TRAIN, TEST
+    }
+    
     // This a class with two counters (for regular and for spam)
     static class Multiple_Counter
     {
@@ -65,15 +71,49 @@ public class Bayespam
         }
     }
 
+    static class MessageProbs
+    {
+    	double regularProb = Math.log(aPrioriRegularMessage);
+    	double spamProb = Math.log(aPrioriSpamMessage);
+    	
+    	/*double regularProb = Math.log(aPrioriRegularMessage / aPrioriSpamMessage);
+    	double spamProb = Math.log(aPrioriSpamMessage / aPrioriRegularMessage);*/
+    	
+    	public void calcMessageProb(String word)
+    	{
+    		Multiple_Prob mp = probs.get(word);
+    		if(mp != null)
+    		{
+    			regularProb += Math.log(mp.conditional_regular * mp.priori_regular / aPrioriRegularMessage);
+    			spamProb 	+= Math.log(mp.conditional_spam * mp.priori_spam / aPrioriSpamMessage);
+    			
+    			/*System.out.println(mp.conditional_regular + " " + mp.conditional_spam);
+    			regularProb += Math.log(mp.conditional_regular / mp.conditional_spam);
+    			spamProb 	+= Math.log(mp.conditional_spam / mp.conditional_regular);*/
+    			
+    		}
+    	}
+    }
+    
     // Listings of the two subdirectories (regular/ and spam/)
     private static File[] listing_regular = new File[0];
     private static File[] listing_spam = new File[0];
-
+    
     // A hash table for the vocabulary (word searching is very fast in a hash table)
     private static Hashtable <String, Multiple_Counter> vocab = new Hashtable <String, Multiple_Counter> ();
 	/// A hash table for the vocabulary and their probabilities
 	private static Hashtable <String, Multiple_Prob> probs = new Hashtable <String, Multiple_Prob> ();
+    /// A hash table for the testset containing probabilities per file.
+	private static Hashtable <Integer, MessageProbs> testRegular 	= new Hashtable <>();
+	private static Hashtable <Integer, MessageProbs> testSpam 		= new Hashtable <>();
+	
+	static double nMessagesRegular;
+    static double nMessagesSpam;
+    static double nMessagesTotal;
     
+    static double aPrioriSpamMessage;
+    static double aPrioriRegularMessage;
+	
     // Add a word to the vocabulary
     private static void addWord(String word, MessageType type)
     {
@@ -123,17 +163,21 @@ public class Bayespam
         }
     }
 
+    
 
     // Read the words from messages and add them to your vocabulary. The boolean type determines whether the messages are regular or not  
-    private static void readMessages(MessageType type)
+    private static void readMessages(MessageType type, SetType setType)
     throws IOException
     {
         File[] messages = new File[0];
-
+        Hashtable <Integer, MessageProbs> testTable; 
+        
         if (type == MessageType.NORMAL){
             messages = listing_regular;
+            testTable = testRegular;
         } else {
             messages = listing_spam;
+            testTable = testSpam;
         }
         
         for (int i = 0; i < messages.length; ++i)
@@ -142,21 +186,27 @@ public class Bayespam
             BufferedReader in = new BufferedReader(new InputStreamReader(i_s));
             String line;
             String word;
-            
+            // TODO: comment
+            if (setType == SetType.TEST)
+            	testTable.put(i, new MessageProbs());
             while ((line = in.readLine()) != null)                      // read a line
             {
                 StringTokenizer st = new StringTokenizer(line);         // parse it into words
-        
-                while (st.hasMoreTokens())                  // while there are stille words left..
+                
+                while (st.hasMoreTokens())                  // while there are still words left..
                 {
-                    addWord(st.nextToken(), type);                  // add them to the vocabulary
+                    if(setType == SetType.TRAIN)
+                    	addWord(st.nextToken(), type); // add them to the vocabulary
+                    else
+                    	testTable.get(i).calcMessageProb(st.nextToken());
                 }
             }
 
             in.close();
         }
     }
-   
+    
+    
     public static void main(String[] args)
     throws IOException
     {
@@ -174,8 +224,8 @@ public class Bayespam
         listDirs(dir_location);
 
         // Read the e-mail messages
-        readMessages(MessageType.NORMAL);
-        readMessages(MessageType.SPAM);
+        readMessages(MessageType.NORMAL, SetType.TRAIN);
+        readMessages(MessageType.SPAM, SetType.TRAIN);
 
         // Print out the hash table
         //printVocab();
@@ -192,12 +242,12 @@ public class Bayespam
         //
         // 1) A priori class probabilities must be computed from the number of regular and spam messages
         
-        double nMessagesRegular = listing_regular.length;
-        double nMessagesSpam = listing_spam.length;
-        double nMessagesTotal = listing_regular.length + listing_spam.length;
+        nMessagesRegular = listing_regular.length;
+        nMessagesSpam = listing_spam.length;
+        nMessagesTotal = listing_regular.length + listing_spam.length;
         
-        double aPrioriSpamMessage    = nMessagesSpam / nMessagesTotal;
-        double aPrioriRegularMessage = nMessagesRegular / nMessagesTotal;
+        aPrioriSpamMessage    = (nMessagesSpam / nMessagesTotal);
+        aPrioriRegularMessage = (nMessagesRegular / nMessagesTotal);
         
         System.out.println("a priori spam message:    " + aPrioriSpamMessage);
         System.out.println("a priori regular message: " + aPrioriRegularMessage);
@@ -241,26 +291,39 @@ public class Bayespam
         System.out.println("number of spam words    : " + nWordsSpam);
         
         enumKey = vocab.keys();
+        double smallVal = 0.001 / (nWordsRegular + nWordsSpam);
         while (enumKey.hasMoreElements())
         {
 			String key = enumKey.nextElement();
 			Multiple_Prob prob = new Multiple_Prob ();
 			
-			double ConditionalSpam = vocab.get(key).counter_spam / nWordsSpam;
-			double ConditionalRegular = vocab.get(key).counter_regular / nWordsRegular;
-			double aPrioriSpam = vocab.get(key).counter_spam / nWordsTotal;
-			double aPrioriRegular = vocab.get(key).counter_regular / nWordsTotal;
+			double ConditionalSpam = 	(vocab.get(key).counter_spam / nWordsSpam);
+			double ConditionalRegular = (vocab.get(key).counter_regular / nWordsRegular);
+			double aPrioriSpam = 		(vocab.get(key).counter_spam / nWordsTotal);
+			double aPrioriRegular = 	(vocab.get(key).counter_regular / nWordsTotal);
+			
+			if (vocab.get(key).counter_spam == 0) 
+			{
+				ConditionalSpam = 	smallVal;
+				aPrioriSpam = 		smallVal;
+			}
+			if (vocab.get(key).counter_regular == 0)
+			{
+				ConditionalRegular = smallVal;
+				aPrioriRegular = smallVal;
+			}
+			
 			
 			prob.setProb(MessageType.SPAM, ProbType.CONDITIONAL, ConditionalSpam);
 			prob.setProb(MessageType.NORMAL, ProbType.CONDITIONAL, ConditionalRegular);
 			prob.setProb(MessageType.SPAM, ProbType.PRIORI, aPrioriSpam);
 			prob.setProb(MessageType.NORMAL, ProbType.PRIORI, aPrioriRegular);
 			
-			System.out.println(key + "	:");
-			System.out.println("The conditional probability for a spam word is	:" + ConditionalSpam);
-			System.out.println("The conditional probability for a regular word is	:" + ConditionalRegular);
-			System.out.println("The a priori probability for a spam word is	:" + aPrioriSpam);
-			System.out.println("The a priori probability for a regular word is	:" + aPrioriRegular);
+			//System.out.println(key + "	:");
+			//System.out.println("The conditional probability for a spam word is	:" + ConditionalSpam);
+			//System.out.println("The conditional probability for a regular word is	:" + ConditionalRegular);
+			//System.out.println("The a priori probability for a spam word is	:" + aPrioriSpam);
+			//System.out.println("The a priori probability for a regular word is	:" + aPrioriRegular);
 			
 			probs.put(key, prob);
 		}
@@ -269,7 +332,68 @@ public class Bayespam
         
         
         // 5) Zero probabilities must be replaced by a small estimated value
+        
+        /*enumKey = probs.keys();
+        
+        while (enumKey.hasMoreElements())
+        {
+        	String key = enumKey.nextElement();
+        	Multiple_Prob keyProbs = probs.get(key);
+        	if (keyProbs.conditional_regular == 0.0)
+        		keyProbs.conditional_regular = smallVal;
+        	
+        	if (keyProbs.conditional_spam == 0.0)
+        		keyProbs.conditional_spam = smallVal;
+        	
+        	if (keyProbs.priori_regular == 0.0)
+        		keyProbs.priori_regular = smallVal;
+        	
+        	if (keyProbs.priori_spam == 0)
+        		keyProbs.priori_spam = smallVal;
+        }
+        */
+        /// ------- TESTING PHASE --------- ///
+        
+        dir_location = new File( args[1] );
+        
+        // Check if the cmd line arg is a directory
+        if ( !dir_location.isDirectory() )
+        {
+            System.out.println( "- Error: cmd line arg not a directory.\n" );
+            Runtime.getRuntime().exit(0);
+        }
+
+        // Initialize the regular and spam lists
+        listDirs(dir_location);
+        
+        readMessages(MessageType.NORMAL, SetType.TEST);
+        readMessages(MessageType.SPAM, SetType.TEST);
+        
+        int count = 0;
+        double good = 0;
         // 6) Bayes rule must be applied on new messages, followed by argmax classification
+        Enumeration<Integer> keyItr = testRegular.keys();
+        while (keyItr.hasMoreElements())
+        {
+        	int key = keyItr.nextElement();
+        	++count;
+        	/// good!
+        	System.out.println(testRegular.get(key).regularProb);
+        	System.out.println(testRegular.get(key).spamProb);
+        	if(testRegular.get(key).regularProb > testRegular.get(key).spamProb)
+        		++good;	
+        }
+        
+        keyItr = testSpam.keys();
+        while (keyItr.hasMoreElements())
+        {
+        	int key = keyItr.nextElement();
+        	++count;
+        	/// good!
+        	if (testSpam.get(key).spamProb > testSpam.get(key).regularProb)
+        		++good;
+        }
+        System.out.println("Percentage correct: " + (good/count)*100 + "\n");
         // 7) Errors must be computed on the test set (FAR = false accept rate (misses), FRR = false reject rate (false alarms))
         // 8) Improve the code and the performance (speed, accuracy)
         //

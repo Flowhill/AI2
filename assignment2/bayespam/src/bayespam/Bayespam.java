@@ -291,7 +291,9 @@ public class Bayespam
         System.out.println("number of spam words    : " + nWordsSpam);
         
         enumKey = vocab.keys();
-        double smallVal = 0.001 / (nWordsRegular + nWordsSpam);
+        for (double itr = 0.1; itr <= 1; itr += 0.1)
+        {
+        double smallVal = itr / (nWordsRegular + nWordsSpam);
         while (enumKey.hasMoreElements())
         {
 			String key = enumKey.nextElement();
@@ -370,18 +372,20 @@ public class Bayespam
         readMessages(MessageType.SPAM, SetType.TEST);
         
         int count = 0;
-        double good = 0;
         // 6) Bayes rule must be applied on new messages, followed by argmax classification
+        
+        /// Testing performance of the spamfilter
+        int correctRegular = 0;
+        int correctSpam = 0;
         Enumeration<Integer> keyItr = testRegular.keys();
         while (keyItr.hasMoreElements())
         {
         	int key = keyItr.nextElement();
         	++count;
         	/// good!
-        	System.out.println(testRegular.get(key).regularProb);
-        	System.out.println(testRegular.get(key).spamProb);
+  
         	if(testRegular.get(key).regularProb > testRegular.get(key).spamProb)
-        		++good;	
+        		++correctRegular;	
         }
         
         keyItr = testSpam.keys();
@@ -391,12 +395,20 @@ public class Bayespam
         	++count;
         	/// good!
         	if (testSpam.get(key).spamProb > testSpam.get(key).regularProb)
-        		++good;
+        		++correctSpam;
         }
-        System.out.println("Percentage correct: " + (good/count)*100 + "\n");
+        System.out.println("\n" + itr + ": Percentage correct: " + ((double)(correctRegular+correctSpam)/count)*100 + "\n");
+        System.out.println("Confusion matrix:\n");
+        System.out.println("        |correct|\tfalse");
+        System.out.println("-----------------------------");
+        System.out.println("regular |" + correctRegular + " \t|\t" + (listing_regular.length - correctRegular));
+        System.out.println("-----------------------------");
+        System.out.println("spam    |" + correctSpam + "\t|\t" + (listing_spam.length - correctSpam));
         // 7) Errors must be computed on the test set (FAR = false accept rate (misses), FRR = false reject rate (false alarms))
+        
         // 8) Improve the code and the performance (speed, accuracy)
         //
         // Use the same steps to create a class BigramBayespam which implements a classifier using a vocabulary consisting of bigrams
+        }    
     }
 }

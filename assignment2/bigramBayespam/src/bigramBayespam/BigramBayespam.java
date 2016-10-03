@@ -40,7 +40,7 @@ public class BigramBayespam
         }
     }
     
-    /// Class for saving the conditional and a priori for every word
+    /// Class for saving the conditional and a-priori for every word
         static class Multiple_Prob
     {
         double conditional_regular = 0;
@@ -70,7 +70,7 @@ public class BigramBayespam
             }
         }
     }
-
+    /// Class for saving the probabilities of whether a message is a regular or a spam message
     static class MessageProbs
     {
     	double regularProb = Math.log(aPrioriRegularMessage);
@@ -113,7 +113,7 @@ public class BigramBayespam
     static double aPrioriSpamMessage;
     static double aPrioriRegularMessage;
 	
-    // Add a word to the vocabulary
+    /// Add a bigram to the vocabulary
     private static void addTuple(java.util.Map.Entry<String,String> pair, MessageType type)
     {
         Multiple_Counter counter = new Multiple_Counter();
@@ -163,17 +163,20 @@ public class BigramBayespam
 
     
 
-    // Read the words from messages and add them to your vocabulary. The boolean type determines whether the messages are regular or not  
+    // Read the words from messages and add them to your vocabulary. The boolean type determines whether the messages are regular or not
+    /// Altered to accept two words at a time and add them to the vocabulary. The set type determines whether the program is testing or training.
     private static void readMessages(MessageType type, SetType setType)
     throws IOException
     {
         File[] messages = new File[0];
         Hashtable <Integer, MessageProbs> testTable; 
         
-        if (type == MessageType.NORMAL){
+        if (type == MessageType.NORMAL)
+        {
             messages = listing_regular;
             testTable = testRegular;
-        } else {
+        } else 
+        {
             messages = listing_spam;
             testTable = testSpam;
         }
@@ -193,24 +196,23 @@ public class BigramBayespam
                 if(st.hasMoreTokens())
                 {
                 	word = st.nextToken();
-                while (st.hasMoreTokens())                  // while there are still words left..
-                {
-                	word2 = st.nextToken();
-                	word = clean(word);
-                	word2 = clean(word2);
-                	if(word != null && word2 != null)
-                	{
-                		java.util.Map.Entry<String,String> pair = new java.util.AbstractMap.SimpleEntry<>(word, word2);
-	                    if(setType == SetType.TRAIN)
-	                		addTuple(pair, type); // add them to the vocabulary
-	                    else
-	                    	testTable.get(i).calcMessageProb(pair);
-                	}
-                    word = word2;
-                }
+	                while (st.hasMoreTokens())                  // while there are still words left..
+	                {
+	                	word2 = st.nextToken();
+	                	word = clean(word);						/// Make sure that the words are within our expectations
+	                	word2 = clean(word2);					/// e.g. proper wordsize, no punctuation and all lowercase.
+	                	if(word != null && word2 != null)
+	                	{
+	                		java.util.Map.Entry<String,String> pair = new java.util.AbstractMap.SimpleEntry<>(word, word2);
+		                    if(setType == SetType.TRAIN)
+		                		addTuple(pair, type); 			/// add two words as a bigram to the vocabulary
+		                    else
+		                    	testTable.get(i).calcMessageProb(pair);
+	                	}
+	                    word = word2;
+	                }
                 }
             }
-
             in.close();
         }
     }
@@ -218,8 +220,10 @@ public class BigramBayespam
     private static String clean(String word)
     {
     	// 2) The vocabulary must be clean: punctuation and digits must be removed, case insensitive
+    	
     	/// Set the word size threshold
     	int wordSizeThreshold = 4;
+    	
     	if (word != null)
     	{
 	    	word = word.replaceAll("[^a-zA-Z]", "");    	
@@ -282,8 +286,10 @@ public class BigramBayespam
         
         double nBigramsRegular 	= 0;
         double nBigramsSpam 		= 0;
+        
         /// Set the bigram removal threshold
         int bigramThreshold = 2;
+        
         Enumeration<java.util.Map.Entry<String,String>> enumKey = vocab.keys();
         
         /// calculate the the total amount of spam and regular Bigrams
@@ -306,122 +312,117 @@ public class BigramBayespam
         enumKey = vocab.keys();
         for (double itr = 0.1; itr <= 1; itr += 0.1)
         {
-        double smallVal = itr / (nBigramsRegular + nBigramsSpam);
-        while (enumKey.hasMoreElements())
-        {
-        	java.util.Map.Entry<String,String> key = enumKey.nextElement();
-			Multiple_Prob prob = new Multiple_Prob ();
-			
-			double ConditionalSpam = 	(vocab.get(key).counter_spam / nBigramsSpam);
-			double ConditionalRegular = (vocab.get(key).counter_regular / nBigramsRegular);
-			double aPrioriSpam = 		(vocab.get(key).counter_spam / nBigramsTotal);
-			double aPrioriRegular = 	(vocab.get(key).counter_regular / nBigramsTotal);
-			
-			if (vocab.get(key).counter_spam == 0) 
-			{
-				ConditionalSpam = 	smallVal;
-				aPrioriSpam = 		smallVal;
+        	double smallVal = itr / (nBigramsRegular + nBigramsSpam);
+	        while (enumKey.hasMoreElements())
+	        {
+	        	java.util.Map.Entry<String,String> key = enumKey.nextElement();
+				Multiple_Prob prob = new Multiple_Prob ();
+				
+				double ConditionalSpam = 	(vocab.get(key).counter_spam / nBigramsSpam);
+				double ConditionalRegular = (vocab.get(key).counter_regular / nBigramsRegular);
+				double aPrioriSpam = 		(vocab.get(key).counter_spam / nBigramsTotal);
+				double aPrioriRegular = 	(vocab.get(key).counter_regular / nBigramsTotal);
+				
+				if (vocab.get(key).counter_spam == 0) 
+				{
+					ConditionalSpam = 	smallVal;
+					aPrioriSpam = 		smallVal;
+				}
+				if (vocab.get(key).counter_regular == 0)
+				{
+					ConditionalRegular = smallVal;
+					aPrioriRegular = smallVal;
+				}
+				
+				
+				prob.setProb(MessageType.SPAM, ProbType.CONDITIONAL, ConditionalSpam);
+				prob.setProb(MessageType.NORMAL, ProbType.CONDITIONAL, ConditionalRegular);
+				prob.setProb(MessageType.SPAM, ProbType.PRIORI, aPrioriSpam);
+				prob.setProb(MessageType.NORMAL, ProbType.PRIORI, aPrioriRegular);
+				
+				//System.out.println(key + "	:");
+				//System.out.println("The conditional probability for a spam word is	:" + ConditionalSpam);
+				//System.out.println("The conditional probability for a regular word is	:" + ConditionalRegular);
+				//System.out.println("The a priori probability for a spam word is	:" + aPrioriSpam);
+				//System.out.println("The a priori probability for a regular word is	:" + aPrioriRegular);
+				
+				probs.put(key, prob);
 			}
-			if (vocab.get(key).counter_regular == 0)
-			{
-				ConditionalRegular = smallVal;
-				aPrioriRegular = smallVal;
-			}
-			
-			
-			prob.setProb(MessageType.SPAM, ProbType.CONDITIONAL, ConditionalSpam);
-			prob.setProb(MessageType.NORMAL, ProbType.CONDITIONAL, ConditionalRegular);
-			prob.setProb(MessageType.SPAM, ProbType.PRIORI, aPrioriSpam);
-			prob.setProb(MessageType.NORMAL, ProbType.PRIORI, aPrioriRegular);
-			
-			//System.out.println(key + "	:");
-			//System.out.println("The conditional probability for a spam word is	:" + ConditionalSpam);
-			//System.out.println("The conditional probability for a regular word is	:" + ConditionalRegular);
-			//System.out.println("The a priori probability for a spam word is	:" + aPrioriSpam);
-			//System.out.println("The a priori probability for a regular word is	:" + aPrioriRegular);
-			
-			probs.put(key, prob);
-		}
-
         
-        
-        
-        // 5) Zero probabilities must be replaced by a small estimated value
-        
-        /*enumKey = probs.keys();
-        
-        while (enumKey.hasMoreElements())
-        {
-        	String key = enumKey.nextElement();
-        	Multiple_Prob keyProbs = probs.get(key);
-        	if (keyProbs.conditional_regular == 0.0)
-        		keyProbs.conditional_regular = smallVal;
-        	
-        	if (keyProbs.conditional_spam == 0.0)
-        		keyProbs.conditional_spam = smallVal;
-        	
-        	if (keyProbs.priori_regular == 0.0)
-        		keyProbs.priori_regular = smallVal;
-        	
-        	if (keyProbs.priori_spam == 0)
-        		keyProbs.priori_spam = smallVal;
-        }
-        */
-        /// ------- TESTING PHASE --------- ///
-        
-        dir_location = new File( args[1] );
-        
-        // Check if the cmd line arg is a directory
-        if ( !dir_location.isDirectory() )
-        {
-            System.out.println( "- Error: cmd line arg not a directory.\n" );
-            Runtime.getRuntime().exit(0);
-        }
-
-        // Initialize the regular and spam lists
-        listDirs(dir_location);
-        
-        readMessages(MessageType.NORMAL, SetType.TEST);
-        readMessages(MessageType.SPAM, SetType.TEST);
-        
-        int count = 0;
-        // 6) Bayes rule must be applied on new messages, followed by argmax classification
-        
-        /// Testing performance of the spamfilter
-        int correctRegular = 0;
-        int correctSpam = 0;
-        Enumeration<Integer> keyItr = testRegular.keys();
-        while (keyItr.hasMoreElements())
-        {
-        	int key = keyItr.nextElement();
-        	++count;
-        	/// good!
-  
-        	if(testRegular.get(key).regularProb > testRegular.get(key).spamProb)
-        		++correctRegular;	
-        }
-        
-        keyItr = testSpam.keys();
-        while (keyItr.hasMoreElements())
-        {
-        	int key = keyItr.nextElement();
-        	++count;
-        	/// good!
-        	if (testSpam.get(key).spamProb > testSpam.get(key).regularProb)
-        		++correctSpam;
-        }
-        System.out.println("\n" + itr + ": Percentage correct: " + ((double)(correctRegular+correctSpam)/count)*100 + "\n");
-        System.out.println("Confusion matrix:\n");
-        System.out.println("        |correct|\tfalse");
-        System.out.println("-----------------------------");
-        System.out.println("regular |" + correctRegular + " \t|\t" + (listing_regular.length - correctRegular));
-        System.out.println("-----------------------------");
-        System.out.println("spam    |" + correctSpam + "\t|\t" + (listing_spam.length - correctSpam));
-        // 7) Errors must be computed on the test set (FAR = false accept rate (misses), FRR = false reject rate (false alarms))
-        
-        // 8) Improve the code and the performance (speed, accuracy)
-        //
-        // Use the same steps to create a class BigramBayespam which implements a classifier using a vocabulary consisting of bigrams
+	        /*enumKey = probs.keys();
+	        
+	        while (enumKey.hasMoreElements())
+	        {
+	        	String key = enumKey.nextElement();
+	        	Multiple_Prob keyProbs = probs.get(key);
+	        	if (keyProbs.conditional_regular == 0.0)
+	        		keyProbs.conditional_regular = smallVal;
+	        	
+	        	if (keyProbs.conditional_spam == 0.0)
+	        		keyProbs.conditional_spam = smallVal;
+	        	
+	        	if (keyProbs.priori_regular == 0.0)
+	        		keyProbs.priori_regular = smallVal;
+	        	
+	        	if (keyProbs.priori_spam == 0)
+	        		keyProbs.priori_spam = smallVal;
+	        }
+	        */
+	        /// ------- TESTING PHASE --------- ///
+	        
+	        dir_location = new File( args[1] );
+	        
+	        // Check if the cmd line arg is a directory
+	        if ( !dir_location.isDirectory() )
+	        {
+	            System.out.println( "- Error: cmd line arg not a directory.\n" );
+	            Runtime.getRuntime().exit(0);
+	        }
+	
+	        // Initialize the regular and spam lists
+	        listDirs(dir_location);
+	        
+	        readMessages(MessageType.NORMAL, SetType.TEST);
+	        readMessages(MessageType.SPAM, SetType.TEST);
+	        
+	        int count = 0;
+	        // 6) Bayes rule must be applied on new messages, followed by argmax classification
+	        
+	        /// Testing performance of the spamfilter
+	        int correctRegular = 0;
+	        int correctSpam = 0;
+	        Enumeration<Integer> keyItr = testRegular.keys();
+	        while (keyItr.hasMoreElements())
+	        {
+	        	int key = keyItr.nextElement();
+	        	++count;
+	        	/// good!
+	  
+	        	if(testRegular.get(key).regularProb > testRegular.get(key).spamProb)
+	        		++correctRegular;	
+	        }
+	        
+	        keyItr = testSpam.keys();
+	        while (keyItr.hasMoreElements())
+	        {
+	        	int key = keyItr.nextElement();
+	        	++count;
+	        	/// good!
+	        	if (testSpam.get(key).spamProb > testSpam.get(key).regularProb)
+	        		++correctSpam;
+	        }
+	        System.out.println("\n" + itr + ": Percentage correct: " + ((double)(correctRegular+correctSpam)/count)*100 + "\n");
+	        System.out.println("Confusion matrix:\n");
+	        System.out.println("        |correct|\tfalse");
+	        System.out.println("-----------------------------");
+	        System.out.println("regular |" + correctRegular + " \t|\t" + (listing_regular.length - correctRegular));
+	        System.out.println("-----------------------------");
+	        System.out.println("spam    |" + correctSpam + "\t|\t" + (listing_spam.length - correctSpam));
+	        // 7) Errors must be computed on the test set (FAR = false accept rate (misses), FRR = false reject rate (false alarms))
+	        
+	        // 8) Improve the code and the performance (speed, accuracy)
+	        //
+	        // Use the same steps to create a class BigramBayespam which implements a classifier using a vocabulary consisting of bigrams
         }    
     }
 }

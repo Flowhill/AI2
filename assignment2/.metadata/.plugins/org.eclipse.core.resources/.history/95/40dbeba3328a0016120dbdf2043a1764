@@ -229,7 +229,7 @@ public class Bayespam
         readMessages(MessageType.SPAM, SetType.TRAIN);
 
         // Print out the hash table
-         
+        printVocab(); 
 
         // Now all students must continue from here:
         //
@@ -264,8 +264,6 @@ public class Bayespam
         		vocab.put(newKey, counter);
         	}
         }
-        
-        printVocab();
         
         // 3) Conditional probabilities must be computed for every word
         // 4) A priori probabilities must be computed for every word

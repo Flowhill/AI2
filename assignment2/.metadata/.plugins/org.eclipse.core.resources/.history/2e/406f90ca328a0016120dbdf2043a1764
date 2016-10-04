@@ -300,13 +300,12 @@ public class BigramBayespam
         	nBigramsSpam += vocab.get(key).counter_spam;
         	}
         }
-        
-        printVocab();
-        
         double nBigramsTotal = nBigramsRegular + nBigramsSpam;
+        System.out.println("number of regular Bigrams : " + nBigramsRegular);
+        System.out.println("number of spam Bigrams    : " + nBigramsSpam);
         
         enumKey = vocab.keys();
-        	double smallVal = 1 / (nBigramsRegular + nBigramsSpam);
+        	double smallVal = 0.001 / (nBigramsRegular + nBigramsSpam);
 	        while (enumKey.hasMoreElements())
 	        {
 	        	java.util.Map.Entry<String,String> key = enumKey.nextElement();

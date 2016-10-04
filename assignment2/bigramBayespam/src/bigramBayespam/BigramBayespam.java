@@ -69,7 +69,10 @@ public class BigramBayespam
             }
         }
     }
+<<<<<<< HEAD
         
+=======
+>>>>>>> 32d47d53673fdf7bb7f21bbb696242bb349c56f1
     /// Class for saving the probabilities of whether a message is a regular or a spam message
     static class MessageProbs
     {
@@ -156,12 +159,19 @@ public class BigramBayespam
         }
     }
 
+<<<<<<< HEAD
     // Read the words from messages and add them to your vocabulary. The boolean type determines whether the messages are regular or not
     /// Altered to accept two words at a time and add them to the vocabulary. The set type determines whether the program is testing or training.
     /// If the classifier is training then the words are parsed into bigrams, checked for the proper form (size, punctuation, lowercase, etc.)
     /// and then put into the vocabulary
     /// If the classifier is testing then similarly the words are parsed, however they are now used to calculate the probabilities of
     /// whether a message is a regular or a spam message.
+=======
+    
+
+    // Read the words from messages and add them to your vocabulary. The boolean type determines whether the messages are regular or not
+    /// Altered to accept two words at a time and add them to the vocabulary. The set type determines whether the program is testing or training.
+>>>>>>> 32d47d53673fdf7bb7f21bbb696242bb349c56f1
     private static void readMessages(MessageType type, SetType setType)
     throws IOException
     {
@@ -208,7 +218,11 @@ public class BigramBayespam
 		                    if(setType == SetType.TRAIN)
 		                		addTuple(pair, type); 			/// add two words as a bigram to the vocabulary
 		                    else
+<<<<<<< HEAD
 		                    	testTable.get(i).calcMessageProb(pair); /// else calculate the probabilities the bigram adds to the message
+=======
+		                    	testTable.get(i).calcMessageProb(pair);
+>>>>>>> 32d47d53673fdf7bb7f21bbb696242bb349c56f1
 	                	}
 	                    word = word2;
 	                }
@@ -305,7 +319,12 @@ public class BigramBayespam
         System.out.println("number of spam Bigrams    : " + nBigramsSpam);
         
         enumKey = vocab.keys();
+<<<<<<< HEAD
         
+=======
+        for (double itr = 0.1; itr <= 1; itr += 0.1)
+        {
+>>>>>>> 32d47d53673fdf7bb7f21bbb696242bb349c56f1
         	double smallVal = itr / (nBigramsRegular + nBigramsSpam);
 	        while (enumKey.hasMoreElements())
 	        {
@@ -328,14 +347,49 @@ public class BigramBayespam
 					aPrioriRegular = smallVal;
 				}
 				
+<<<<<<< HEAD
+=======
+				
+>>>>>>> 32d47d53673fdf7bb7f21bbb696242bb349c56f1
 				prob.setProb(MessageType.SPAM, ProbType.CONDITIONAL, ConditionalSpam);
 				prob.setProb(MessageType.NORMAL, ProbType.CONDITIONAL, ConditionalRegular);
 				prob.setProb(MessageType.SPAM, ProbType.PRIORI, aPrioriSpam);
 				prob.setProb(MessageType.NORMAL, ProbType.PRIORI, aPrioriRegular);
 				
+<<<<<<< HEAD
 				probs.put(key, prob);
 			}
         
+=======
+				//System.out.println(key + "	:");
+				//System.out.println("The conditional probability for a spam word is	:" + ConditionalSpam);
+				//System.out.println("The conditional probability for a regular word is	:" + ConditionalRegular);
+				//System.out.println("The a priori probability for a spam word is	:" + aPrioriSpam);
+				//System.out.println("The a priori probability for a regular word is	:" + aPrioriRegular);
+				
+				probs.put(key, prob);
+			}
+        
+	        /*enumKey = probs.keys();
+	        
+	        while (enumKey.hasMoreElements())
+	        {
+	        	String key = enumKey.nextElement();
+	        	Multiple_Prob keyProbs = probs.get(key);
+	        	if (keyProbs.conditional_regular == 0.0)
+	        		keyProbs.conditional_regular = smallVal;
+	        	
+	        	if (keyProbs.conditional_spam == 0.0)
+	        		keyProbs.conditional_spam = smallVal;
+	        	
+	        	if (keyProbs.priori_regular == 0.0)
+	        		keyProbs.priori_regular = smallVal;
+	        	
+	        	if (keyProbs.priori_spam == 0)
+	        		keyProbs.priori_spam = smallVal;
+	        }
+	        */
+>>>>>>> 32d47d53673fdf7bb7f21bbb696242bb349c56f1
 	        /// ------- TESTING PHASE --------- ///
 	        
 	        dir_location = new File( args[1] );
@@ -389,6 +443,11 @@ public class BigramBayespam
 	        // 7) Errors must be computed on the test set (FAR = false accept rate (misses), FRR = false reject rate (false alarms))
 	        
 	        // 8) Improve the code and the performance (speed, accuracy)
+<<<<<<< HEAD
+=======
+	        //
+	        // Use the same steps to create a class BigramBayespam which implements a classifier using a vocabulary consisting of bigrams
+>>>>>>> 32d47d53673fdf7bb7f21bbb696242bb349c56f1
         }    
     }
 }

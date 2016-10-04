@@ -17,7 +17,7 @@ public class BigramBayespam
         PRIORI, CONDITIONAL
     }
     
-    /// This defines the two types of testsets we have
+    /// This defines the two types of message sets we have
     static enum SetType
     {
     	TRAIN, TEST
@@ -70,15 +70,13 @@ public class BigramBayespam
             }
         }
     }
+        
     /// Class for saving the probabilities of whether a message is a regular or a spam message
     static class MessageProbs
     {
     	double regularProb = Math.log(aPrioriRegularMessage);
     	double spamProb = Math.log(aPrioriSpamMessage);
-    	
-    	/*double regularProb = Math.log(aPrioriRegularMessage / aPrioriSpamMessage);
-    	double spamProb = Math.log(aPrioriSpamMessage / aPrioriRegularMessage);*/
-    	
+
     	public void calcMessageProb(java.util.Map.Entry<String,String> pair)
     	{
     		Multiple_Prob mp = probs.get(pair);
@@ -87,9 +85,6 @@ public class BigramBayespam
     			regularProb += Math.log(mp.conditional_regular * mp.priori_regular / aPrioriRegularMessage);
     			spamProb 	+= Math.log(mp.conditional_spam * mp.priori_spam / aPrioriSpamMessage);
     			
-    			/*System.out.println(mp.conditional_regular + " " + mp.conditional_spam);
-    			regularProb += Math.log(mp.conditional_regular / mp.conditional_spam);
-    			spamProb 	+= Math.log(mp.conditional_spam / mp.conditional_regular);*/	
     		}
     	}
     }
@@ -99,6 +94,7 @@ public class BigramBayespam
     private static File[] listing_spam = new File[0];
     
     // A hash table for the vocabulary (word searching is very fast in a hash table)
+    /// Altered to accept pairs of strings (bigrams)
     private static Hashtable <java.util.Map.Entry<String,String>, Multiple_Counter> vocab = new Hashtable <> ();
 	/// A hash table for the vocabulary and their probabilities
 	private static Hashtable <java.util.Map.Entry<String,String>, Multiple_Prob> probs = new Hashtable <> ();
@@ -106,10 +102,12 @@ public class BigramBayespam
 	private static Hashtable <Integer, MessageProbs> testRegular 	= new Hashtable <>();
 	private static Hashtable <Integer, MessageProbs> testSpam 		= new Hashtable <>();
 	
+	/// Variables containing the amount of messages and types of messages
 	static double nMessagesRegular;
     static double nMessagesSpam;
     static double nMessagesTotal;
     
+    /// Variables containing the apriori probabilities for spam and regular messages
     static double aPrioriSpamMessage;
     static double aPrioriRegularMessage;
 	
@@ -124,7 +122,6 @@ public class BigramBayespam
 
         vocab.put(pair, counter);                       // put the word with its counter into the hashtable
     }
-
 
     // List the regular and spam messages
     private static void listDirs(File dir_location)
@@ -142,7 +139,6 @@ public class BigramBayespam
         listing_regular = dir_listing[0].listFiles();
         listing_spam    = dir_listing[1].listFiles();
     }
-
     
     // Print the current content of the vocabulary
     private static void printVocab()
@@ -161,10 +157,12 @@ public class BigramBayespam
         }
     }
 
-    
-
     // Read the words from messages and add them to your vocabulary. The boolean type determines whether the messages are regular or not
     /// Altered to accept two words at a time and add them to the vocabulary. The set type determines whether the program is testing or training.
+    /// If the classifier is training then the words are parsed into bigrams, checked for the proper form (size, punctuation, lowercase, etc.)
+    /// and then put into the vocabulary
+    /// If the classifier is testing then similarly the words are parsed, however they are now used to calculate the probabilities of
+    /// whether a message is a regular or a spam message.
     private static void readMessages(MessageType type, SetType setType)
     throws IOException
     {
@@ -180,16 +178,20 @@ public class BigramBayespam
             messages = listing_spam;
             testTable = testSpam;
         }
-        
+        /// For every message in the directory
         for (int i = 0; i < messages.length; ++i)
         {
             FileInputStream i_s = new FileInputStream( messages[i] );
             BufferedReader in = new BufferedReader(new InputStreamReader(i_s));
             String line;
             String word, word2;
-            // TODO: comment
+            /// If we are testing create a new class MessageProbs that keeps track of the probabilities
+            /// of whether a message is regular or spam.
             if (setType == SetType.TEST)
             	testTable.put(i, new MessageProbs());
+            /// Read through the message and: 
+            /// put correct bigrams into the vocabulary when training
+            /// use the bigrams to calculate message probabilities when testing.
             while ((line = in.readLine()) != null)                      // read a line
             {
                 StringTokenizer st = new StringTokenizer(line);         // parse it into words
@@ -207,7 +209,7 @@ public class BigramBayespam
 		                    if(setType == SetType.TRAIN)
 		                		addTuple(pair, type); 			/// add two words as a bigram to the vocabulary
 		                    else
-		                    	testTable.get(i).calcMessageProb(pair);
+		                    	testTable.get(i).calcMessageProb(pair); /// else calculate the probabilities the bigram adds to the message
 	                	}
 	                    word = word2;
 	                }
@@ -258,14 +260,6 @@ public class BigramBayespam
 
         // Print out the hash table
         //printVocab();
-        
-        /// Is counter_spam the right variable?
-        /*double aPrioriSpam, aPrioriNormal;
-        aPrioriSpam = vocab.counter_spam/ (vocab.counter_spam + vocab.counter_regular);
-        aPrioriNormal = vocab.counter_regular / (vocab.counter_spam + vocab.counter_regular);
-        */
-        
-        
         
         // Now all students must continue from here:
         //
@@ -334,40 +328,14 @@ public class BigramBayespam
 					aPrioriRegular = smallVal;
 				}
 				
-				
 				prob.setProb(MessageType.SPAM, ProbType.CONDITIONAL, ConditionalSpam);
 				prob.setProb(MessageType.NORMAL, ProbType.CONDITIONAL, ConditionalRegular);
 				prob.setProb(MessageType.SPAM, ProbType.PRIORI, aPrioriSpam);
 				prob.setProb(MessageType.NORMAL, ProbType.PRIORI, aPrioriRegular);
 				
-				//System.out.println(key + "	:");
-				//System.out.println("The conditional probability for a spam word is	:" + ConditionalSpam);
-				//System.out.println("The conditional probability for a regular word is	:" + ConditionalRegular);
-				//System.out.println("The a priori probability for a spam word is	:" + aPrioriSpam);
-				//System.out.println("The a priori probability for a regular word is	:" + aPrioriRegular);
-				
 				probs.put(key, prob);
 			}
         
-	        /*enumKey = probs.keys();
-	        
-	        while (enumKey.hasMoreElements())
-	        {
-	        	String key = enumKey.nextElement();
-	        	Multiple_Prob keyProbs = probs.get(key);
-	        	if (keyProbs.conditional_regular == 0.0)
-	        		keyProbs.conditional_regular = smallVal;
-	        	
-	        	if (keyProbs.conditional_spam == 0.0)
-	        		keyProbs.conditional_spam = smallVal;
-	        	
-	        	if (keyProbs.priori_regular == 0.0)
-	        		keyProbs.priori_regular = smallVal;
-	        	
-	        	if (keyProbs.priori_spam == 0)
-	        		keyProbs.priori_spam = smallVal;
-	        }
-	        */
 	        /// ------- TESTING PHASE --------- ///
 	        
 	        dir_location = new File( args[1] );
@@ -421,8 +389,6 @@ public class BigramBayespam
 	        // 7) Errors must be computed on the test set (FAR = false accept rate (misses), FRR = false reject rate (false alarms))
 	        
 	        // 8) Improve the code and the performance (speed, accuracy)
-	        //
-	        // Use the same steps to create a class BigramBayespam which implements a classifier using a vocabulary consisting of bigrams
         }    
     }
 }

@@ -1,7 +1,6 @@
 package bayespam;
 
 import java.io.*;
-import java.sql.Struct;
 import java.util.*;
 
 public class Bayespam
@@ -17,7 +16,7 @@ public class Bayespam
         PRIORI, CONDITIONAL
     }
     
-    /// This defines the two types of testsets we have
+    /// This defines the two types of message sets we have
     static enum SetType
     {
     	TRAIN, TEST
@@ -70,14 +69,12 @@ public class Bayespam
             }
         }
     }
-
+    
+    /// Class for saving the probabilities of whether a message is a regular or a spam message
     static class MessageProbs
     {
     	double regularProb = Math.log(aPrioriRegularMessage);
     	double spamProb = Math.log(aPrioriSpamMessage);
-    	
-    	/*double regularProb = Math.log(aPrioriRegularMessage / aPrioriSpamMessage);
-    	double spamProb = Math.log(aPrioriSpamMessage / aPrioriRegularMessage);*/
     	
     	public void calcMessageProb(String word)
     	{
@@ -86,10 +83,6 @@ public class Bayespam
     		{
     			regularProb += Math.log(mp.conditional_regular * mp.priori_regular / aPrioriRegularMessage);
     			spamProb 	+= Math.log(mp.conditional_spam * mp.priori_spam / aPrioriSpamMessage);
-    			
-    			/*System.out.println(mp.conditional_regular + " " + mp.conditional_spam);
-    			regularProb += Math.log(mp.conditional_regular / mp.conditional_spam);
-    			spamProb 	+= Math.log(mp.conditional_spam / mp.conditional_regular);*/
     			
     		}
     	}
@@ -107,10 +100,12 @@ public class Bayespam
 	private static Hashtable <Integer, MessageProbs> testRegular 	= new Hashtable <>();
 	private static Hashtable <Integer, MessageProbs> testSpam 		= new Hashtable <>();
 	
+	/// Variables containing the amount of messages and types of messages
 	static double nMessagesRegular;
     static double nMessagesSpam;
     static double nMessagesTotal;
     
+    /// Variables containing the apriori probabilities for spam and regular messages
     static double aPrioriSpamMessage;
     static double aPrioriRegularMessage;
 	
@@ -166,10 +161,15 @@ public class Bayespam
     
 
     // Read the words from messages and add them to your vocabulary. The boolean type determines whether the messages are regular or not  
+    /// The set type determines whether the program is testing or training.
+    /// If the classifier is training then the words are parsed and then put into the vocabulary
+    /// If the classifier is testing then similarly the words are parsed, however they are now used to calculate the probabilities of
+    /// whether a message is a regular or a spam message.
     private static void readMessages(MessageType type, SetType setType)
     throws IOException
     {
-        File[] messages = new File[0];
+        
+    	File[] messages = new File[0];
         Hashtable <Integer, MessageProbs> testTable; 
         
         if (type == MessageType.NORMAL){
@@ -186,7 +186,8 @@ public class Bayespam
             BufferedReader in = new BufferedReader(new InputStreamReader(i_s));
             String line;
             String word;
-            // TODO: comment
+            /// If we are testing create a new class MessageProbs that keeps track of the probabilities
+            /// of whether a message is regular or spam.
             if (setType == SetType.TEST)
             	testTable.put(i, new MessageProbs());
             while ((line = in.readLine()) != null)                      // read a line
@@ -198,7 +199,7 @@ public class Bayespam
                     if(setType == SetType.TRAIN)
                     	addWord(st.nextToken(), type); // add them to the vocabulary
                     else
-                    	testTable.get(i).calcMessageProb(st.nextToken());
+                    	testTable.get(i).calcMessageProb(st.nextToken()); /// else calculate the probabilities the word adds to the message
                 }
             }
 
@@ -210,7 +211,9 @@ public class Bayespam
     public static void main(String[] args)
     throws IOException
     {
-        // Location of the directory (the path) taken from the cmd line (first arg)
+    	for (double itr = 0.001; itr <= 0.1; itr += 0.005)
+        {
+    	// Location of the directory (the path) taken from the cmd line (first arg)
         File dir_location = new File( args[0] );
         
         // Check if the cmd line arg is a directory
@@ -228,16 +231,8 @@ public class Bayespam
         readMessages(MessageType.SPAM, SetType.TRAIN);
 
         // Print out the hash table
-        //printVocab();
-        
-        /// Is counter_spam the right variable?
-        /*double aPrioriSpam, aPrioriNormal;
-        aPrioriSpam = vocab.counter_spam/ (vocab.counter_spam + vocab.counter_regular);
-        aPrioriNormal = vocab.counter_regular / (vocab.counter_spam + vocab.counter_regular);
-        */
-        
-        
-        
+        //printVocab(); 
+
         // Now all students must continue from here:
         //
         // 1) A priori class probabilities must be computed from the number of regular and spam messages
@@ -291,8 +286,7 @@ public class Bayespam
         System.out.println("number of spam words    : " + nWordsSpam);
         
         enumKey = vocab.keys();
-        for (double itr = 0.1; itr <= 1; itr += 0.1)
-        {
+        
         double smallVal = itr / (nWordsRegular + nWordsSpam);
         while (enumKey.hasMoreElements())
         {
@@ -303,7 +297,7 @@ public class Bayespam
 			double ConditionalRegular = (vocab.get(key).counter_regular / nWordsRegular);
 			double aPrioriSpam = 		(vocab.get(key).counter_spam / nWordsTotal);
 			double aPrioriRegular = 	(vocab.get(key).counter_regular / nWordsTotal);
-			
+	        // 5) Zero probabilities must be replaced by a small estimated value			
 			if (vocab.get(key).counter_spam == 0) 
 			{
 				ConditionalSpam = 	smallVal;
@@ -321,19 +315,13 @@ public class Bayespam
 			prob.setProb(MessageType.SPAM, ProbType.PRIORI, aPrioriSpam);
 			prob.setProb(MessageType.NORMAL, ProbType.PRIORI, aPrioriRegular);
 			
-			//System.out.println(key + "	:");
-			//System.out.println("The conditional probability for a spam word is	:" + ConditionalSpam);
-			//System.out.println("The conditional probability for a regular word is	:" + ConditionalRegular);
-			//System.out.println("The a priori probability for a spam word is	:" + aPrioriSpam);
-			//System.out.println("The a priori probability for a regular word is	:" + aPrioriRegular);
-			
 			probs.put(key, prob);
 		}
 
         
         
         
-        // 5) Zero probabilities must be replaced by a small estimated value
+
         
         /*enumKey = probs.keys();
         

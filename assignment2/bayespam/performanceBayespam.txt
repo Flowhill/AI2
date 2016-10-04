@@ -1,0 +1,280 @@
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular words : 5892.0
+number of spam words    : 9086.0
+
+0.001: Percentage correct: 94.68085106382979
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |22 	|	4
+-----------------------------
+spam    |67	|	1
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular words : 7064.0
+number of spam words    : 12704.0
+
+0.006: Percentage correct: 91.48936170212765
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |22 	|	4
+-----------------------------
+spam    |64	|	4
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular words : 8236.0
+number of spam words    : 16322.0
+
+0.011: Percentage correct: 91.48936170212765
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |22 	|	4
+-----------------------------
+spam    |64	|	4
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular words : 9408.0
+number of spam words    : 19940.0
+
+0.016: Percentage correct: 91.48936170212765
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |22 	|	4
+-----------------------------
+spam    |64	|	4
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular words : 10580.0
+number of spam words    : 23558.0
+
+0.021: Percentage correct: 92.5531914893617
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |22 	|	4
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular words : 11752.0
+number of spam words    : 27176.0
+
+0.026000000000000002: Percentage correct: 92.5531914893617
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |22 	|	4
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular words : 12924.0
+number of spam words    : 30794.0
+
+0.031000000000000003: Percentage correct: 92.5531914893617
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |22 	|	4
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular words : 14096.0
+number of spam words    : 34412.0
+
+0.036000000000000004: Percentage correct: 93.61702127659575
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |23 	|	3
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular words : 15268.0
+number of spam words    : 38030.0
+
+0.041: Percentage correct: 93.61702127659575
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |23 	|	3
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular words : 16440.0
+number of spam words    : 41648.0
+
+0.046: Percentage correct: 93.61702127659575
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |23 	|	3
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular words : 17612.0
+number of spam words    : 45266.0
+
+0.051: Percentage correct: 93.61702127659575
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |23 	|	3
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular words : 18784.0
+number of spam words    : 48884.0
+
+0.055999999999999994: Percentage correct: 93.61702127659575
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |23 	|	3
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular words : 19956.0
+number of spam words    : 52502.0
+
+0.06099999999999999: Percentage correct: 93.61702127659575
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |23 	|	3
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular words : 21128.0
+number of spam words    : 56120.0
+
+0.06599999999999999: Percentage correct: 93.61702127659575
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |23 	|	3
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular words : 22300.0
+number of spam words    : 59738.0
+
+0.071: Percentage correct: 93.61702127659575
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |23 	|	3
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular words : 23472.0
+number of spam words    : 63356.0
+
+0.076: Percentage correct: 93.61702127659575
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |23 	|	3
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular words : 24644.0
+number of spam words    : 66974.0
+
+0.081: Percentage correct: 93.61702127659575
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |23 	|	3
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular words : 25816.0
+number of spam words    : 70592.0
+
+0.08600000000000001: Percentage correct: 93.61702127659575
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |23 	|	3
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular words : 26988.0
+number of spam words    : 74210.0
+
+0.09100000000000001: Percentage correct: 93.61702127659575
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |23 	|	3
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular words : 28160.0
+number of spam words    : 77828.0
+
+0.09600000000000002: Percentage correct: 93.61702127659575
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |23 	|	3
+-----------------------------
+spam    |65	|	3

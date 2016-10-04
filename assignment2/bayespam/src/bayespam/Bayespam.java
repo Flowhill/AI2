@@ -211,10 +211,8 @@ public class Bayespam
     public static void main(String[] args)
     throws IOException
     {
-    	for (double itr = 0.001; itr <= 0.1; itr += 0.005)
-        {
     	// Location of the directory (the path) taken from the cmd line (first arg)
-        File dir_location = new File( args[0] );
+    	File dir_location = new File( args[0] );
         
         // Check if the cmd line arg is a directory
         if ( !dir_location.isDirectory() )
@@ -225,13 +223,13 @@ public class Bayespam
 
         // Initialize the regular and spam lists
         listDirs(dir_location);
-
+        
         // Read the e-mail messages
         readMessages(MessageType.NORMAL, SetType.TRAIN);
         readMessages(MessageType.SPAM, SetType.TRAIN);
 
         // Print out the hash table
-        //printVocab(); 
+        printVocab(); 
 
         // Now all students must continue from here:
         //
@@ -287,7 +285,7 @@ public class Bayespam
         
         enumKey = vocab.keys();
         
-        double smallVal = itr / (nWordsRegular + nWordsSpam);
+        double smallVal = 1 / (nWordsRegular + nWordsSpam);
         while (enumKey.hasMoreElements())
         {
 			String key = enumKey.nextElement();
@@ -318,30 +316,6 @@ public class Bayespam
 			probs.put(key, prob);
 		}
 
-        
-        
-        
-
-        
-        /*enumKey = probs.keys();
-        
-        while (enumKey.hasMoreElements())
-        {
-        	String key = enumKey.nextElement();
-        	Multiple_Prob keyProbs = probs.get(key);
-        	if (keyProbs.conditional_regular == 0.0)
-        		keyProbs.conditional_regular = smallVal;
-        	
-        	if (keyProbs.conditional_spam == 0.0)
-        		keyProbs.conditional_spam = smallVal;
-        	
-        	if (keyProbs.priori_regular == 0.0)
-        		keyProbs.priori_regular = smallVal;
-        	
-        	if (keyProbs.priori_spam == 0)
-        		keyProbs.priori_spam = smallVal;
-        }
-        */
         /// ------- TESTING PHASE --------- ///
         
         dir_location = new File( args[1] );
@@ -385,7 +359,7 @@ public class Bayespam
         	if (testSpam.get(key).spamProb > testSpam.get(key).regularProb)
         		++correctSpam;
         }
-        System.out.println("\n" + itr + ": Percentage correct: " + ((double)(correctRegular+correctSpam)/count)*100 + "\n");
+        System.out.println("Percentage correct: " + ((double)(correctRegular+correctSpam)/count)*100 + "\n");
         System.out.println("Confusion matrix:\n");
         System.out.println("        |correct|\tfalse");
         System.out.println("-----------------------------");
@@ -398,5 +372,4 @@ public class Bayespam
         //
         // Use the same steps to create a class BigramBayespam which implements a classifier using a vocabulary consisting of bigrams
         }    
-    }
 }

@@ -225,7 +225,7 @@ public class BigramBayespam
     	// 2) The vocabulary must be clean: punctuation and digits must be removed, case insensitive
     	
     	/// Set the word size threshold
-    	int wordSizeThreshold = 4;
+    	int wordSizeThreshold = 6;
     	
     	if (word != null)
     	{
@@ -242,8 +242,6 @@ public class BigramBayespam
     public static void main(String[] args)
     throws IOException
     {
-    	for (double itr = 0.001; itr <= 0.1; itr += 0.005)
-        {
     	// Location of the directory (the path) taken from the cmd line (first arg)
         File dir_location = new File( args[0] );
         
@@ -256,13 +254,13 @@ public class BigramBayespam
 
         // Initialize the regular and spam lists
         listDirs(dir_location);
-
+        vocab.clear();
         // Read the e-mail messages
         readMessages(MessageType.NORMAL, SetType.TRAIN);
         readMessages(MessageType.SPAM, SetType.TRAIN);
 
         // Print out the hash table
-        //printVocab();
+        printVocab();
         
         // Now all students must continue from here:
         //
@@ -285,7 +283,7 @@ public class BigramBayespam
         double nBigramsSpam 		= 0;
         
         /// Set the bigram removal threshold
-        int bigramThreshold = 2;
+        int bigramThreshold = 8;
         
         Enumeration<java.util.Map.Entry<String,String>> enumKey = vocab.keys();
         
@@ -307,7 +305,7 @@ public class BigramBayespam
         System.out.println("number of spam Bigrams    : " + nBigramsSpam);
         
         enumKey = vocab.keys();
-        	double smallVal = itr / (nBigramsRegular + nBigramsSpam);
+        	double smallVal = 0.001 / (nBigramsRegular + nBigramsSpam);
 	        while (enumKey.hasMoreElements())
 	        {
 	        	java.util.Map.Entry<String,String> key = enumKey.nextElement();
@@ -381,7 +379,7 @@ public class BigramBayespam
 	        	if (testSpam.get(key).spamProb > testSpam.get(key).regularProb)
 	        		++correctSpam;
 	        }
-	        System.out.println("\n" + itr + ": Percentage correct: " + ((double)(correctRegular+correctSpam)/count)*100 + "\n");
+	        System.out.println("\n" +  ": Percentage correct: " + ((double)(correctRegular+correctSpam)/count)*100 + "\n");
 	        System.out.println("Confusion matrix:\n");
 	        System.out.println("        |correct|\tfalse");
 	        System.out.println("-----------------------------");
@@ -392,6 +390,6 @@ public class BigramBayespam
 	        
 	        // 8) Improve the code and the performance (speed, accuracy)
 
-        }    
+        //}    
     }
 }

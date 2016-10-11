@@ -1,4 +1,5 @@
 import java.util.*;
+import java.lang.Math.*;
 
 public class KMeans extends ClusteringAlgorithm
 {
@@ -52,15 +53,77 @@ public class KMeans extends ClusteringAlgorithm
 		for (int ic = 0; ic < k; ic++)
 			clusters[ic] = new Cluster();
 	}
-
+  /// Calculates the mean of a cluster
+  public float[] calculatePrototype(int clusterNumber)
+  {
+    float[] prototype = new float[200];
+    /// For all members in a certain cluster
+    for (int member : clusters[clusterNumber].currentMembers)
+    {
+      /// Loop over all data of that member and add it to the prototype
+      for (int value = 0; value < 200; ++value)
+      {
+        prototype[value] += trainData.get(member)[value];
+      }
+    }
+    /// Divide the prototype's values by the amount of members to get the mean
+    for (int value = 0; value < 200; ++value)
+    {
+      prototype[value] /= trainData.size();
+    }
+    return prototype;
+  }
 
 	public boolean train()
 	{
 	 	//implement k-means algorithm here:
 		// Step 1: Select an initial random partioning with k clusters
-    
+    Random rand = new Random(); /// Create a random number generator
+    for(int i = 0; i < trainData.size(); ++i) /// Loop from 0 to the last user
+    {
+      clusters[rand.nextInt(k)].currentMembers.add(i); /// Add the user to a random cluster
+    }
 		// Step 2: Generate a new partition by assigning each datapoint to its closest cluster center
+    /// For all clusters calculate its mean
+    for(int i = 0; i < k; ++i)
+    {
+      clusters[k].prototype = calculatePrototype(k);
+      /// Set all members to the previous members  and clear the current
+      // TODO: to be moved?
+      clusters[k].previousMembers = clusters[k].currentMembers;
+      clusters[k].currentMembers.clear();
+    }
+
+    
+    /// For every member in the trainingset choose it's closest prototype
+    for(int member = 0; member < trainData.size(); ++member)
+    {
+      /// Variables for saving the current best cluster and current smallest distance
+      int bestCluster = -1;
+      double smallestDist = Double.POSITIVE_INFINITY;
+      /// For every cluster
+      for(int currentCluster = 0; currentCluster < k; ++currentCluster)
+      {
+        /// Set the distance at 0, it will be incremented
+        double distance = 0;
+        /// Calculate the Euclidean distance between the member and the current cluster its prototype
+        for (int value = 0; value < 200; ++value)
+          distance += Math.pow(trainData.get(member)[value] - clusters[currentCluster].prototype[value], 2);
+        distance = Math.sqrt(distance);
+        /// Is the calculated distance the smallest? if so alter the best cluster choice
+        if (distance < smallestDist) bestCluster = currentCluster;
+      }
+      clusters[bestCluster].currentMembers.add(member);
+    }
 		// Step 3: recalculate cluster centers
+    for(int i = 0; i < k; ++i)
+    {
+      clusters[k].prototype = calculatePrototype(k);
+      /// Set all members to the previous members  and clear the current
+      // TODO: to be moved?
+      clusters[k].previousMembers = clusters[k].currentMembers;
+      clusters[k].currentMembers.clear();
+    }
 		// Step 4: repeat until clustermembership stabilizes
 		return false;
 	}

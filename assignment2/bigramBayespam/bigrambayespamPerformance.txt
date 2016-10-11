@@ -1,0 +1,280 @@
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular Bigrams : 1466.0
+number of spam Bigrams    : 1087.0
+
+0.001: Percentage correct: 97.87234042553192
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |25 	|	1
+-----------------------------
+spam    |67	|	1
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular Bigrams : 2932.0
+number of spam Bigrams    : 2174.0
+
+0.006: Percentage correct: 97.87234042553192
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |25 	|	1
+-----------------------------
+spam    |67	|	1
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular Bigrams : 4398.0
+number of spam Bigrams    : 3261.0
+
+0.011: Percentage correct: 95.74468085106383
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |25 	|	1
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular Bigrams : 5864.0
+number of spam Bigrams    : 4348.0
+
+0.016: Percentage correct: 95.74468085106383
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |25 	|	1
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular Bigrams : 7330.0
+number of spam Bigrams    : 5435.0
+
+0.021: Percentage correct: 95.74468085106383
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |25 	|	1
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular Bigrams : 8796.0
+number of spam Bigrams    : 6522.0
+
+0.026000000000000002: Percentage correct: 95.74468085106383
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |25 	|	1
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular Bigrams : 10262.0
+number of spam Bigrams    : 7609.0
+
+0.031000000000000003: Percentage correct: 95.74468085106383
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |25 	|	1
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular Bigrams : 11728.0
+number of spam Bigrams    : 8696.0
+
+0.036000000000000004: Percentage correct: 95.74468085106383
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |25 	|	1
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular Bigrams : 13194.0
+number of spam Bigrams    : 9783.0
+
+0.041: Percentage correct: 95.74468085106383
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |25 	|	1
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular Bigrams : 14660.0
+number of spam Bigrams    : 10870.0
+
+0.046: Percentage correct: 95.74468085106383
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |25 	|	1
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular Bigrams : 16126.0
+number of spam Bigrams    : 11957.0
+
+0.051: Percentage correct: 95.74468085106383
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |25 	|	1
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular Bigrams : 17592.0
+number of spam Bigrams    : 13044.0
+
+0.055999999999999994: Percentage correct: 95.74468085106383
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |25 	|	1
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular Bigrams : 19058.0
+number of spam Bigrams    : 14131.0
+
+0.06099999999999999: Percentage correct: 95.74468085106383
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |25 	|	1
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular Bigrams : 20524.0
+number of spam Bigrams    : 15218.0
+
+0.06599999999999999: Percentage correct: 95.74468085106383
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |25 	|	1
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular Bigrams : 21990.0
+number of spam Bigrams    : 16305.0
+
+0.071: Percentage correct: 95.74468085106383
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |25 	|	1
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular Bigrams : 23456.0
+number of spam Bigrams    : 17392.0
+
+0.076: Percentage correct: 95.74468085106383
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |25 	|	1
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular Bigrams : 24922.0
+number of spam Bigrams    : 18479.0
+
+0.081: Percentage correct: 95.74468085106383
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |25 	|	1
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular Bigrams : 26388.0
+number of spam Bigrams    : 19566.0
+
+0.08600000000000001: Percentage correct: 95.74468085106383
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |25 	|	1
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular Bigrams : 27854.0
+number of spam Bigrams    : 20653.0
+
+0.09100000000000001: Percentage correct: 95.74468085106383
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |25 	|	1
+-----------------------------
+spam    |65	|	3
+a priori spam message:    0.723404255319149
+a priori regular message: 0.2765957446808511
+number of regular Bigrams : 29320.0
+number of spam Bigrams    : 21740.0
+
+0.09600000000000002: Percentage correct: 95.74468085106383
+
+Confusion matrix:
+
+        |correct|	false
+-----------------------------
+regular |25 	|	1
+-----------------------------
+spam    |65	|	3

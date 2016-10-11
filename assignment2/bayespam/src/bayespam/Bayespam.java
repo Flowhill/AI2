@@ -1,7 +1,6 @@
 package bayespam;
 
 import java.io.*;
-import java.sql.Struct;
 import java.util.*;
 
 public class Bayespam
@@ -169,7 +168,8 @@ public class Bayespam
     private static void readMessages(MessageType type, SetType setType)
     throws IOException
     {
-        File[] messages = new File[0];
+        
+    	File[] messages = new File[0];
         Hashtable <Integer, MessageProbs> testTable; 
         
         if (type == MessageType.NORMAL){
@@ -211,8 +211,8 @@ public class Bayespam
     public static void main(String[] args)
     throws IOException
     {
-        // Location of the directory (the path) taken from the cmd line (first arg)
-        File dir_location = new File( args[0] );
+    	// Location of the directory (the path) taken from the cmd line (first arg)
+    	File dir_location = new File( args[0] );
         
         // Check if the cmd line arg is a directory
         if ( !dir_location.isDirectory() )
@@ -223,13 +223,17 @@ public class Bayespam
 
         // Initialize the regular and spam lists
         listDirs(dir_location);
-
+        
         // Read the e-mail messages
         readMessages(MessageType.NORMAL, SetType.TRAIN);
         readMessages(MessageType.SPAM, SetType.TRAIN);
 
         // Print out the hash table
+<<<<<<< HEAD
         //printVocab(); 
+=======
+         
+>>>>>>> a78409b202d3b3aa7cfdd475a61cc7103aad3873
 
         // Now all students must continue from here:
         //
@@ -265,6 +269,8 @@ public class Bayespam
         	}
         }
         
+        printVocab();
+        
         // 3) Conditional probabilities must be computed for every word
         // 4) A priori probabilities must be computed for every word
         
@@ -284,9 +290,8 @@ public class Bayespam
         System.out.println("number of spam words    : " + nWordsSpam);
         
         enumKey = vocab.keys();
-        for (double itr = 0.1; itr <= 1; itr += 0.1)
-        {
-        double smallVal = itr / (nWordsRegular + nWordsSpam);
+        
+        double smallVal = 1 / (nWordsRegular + nWordsSpam);
         while (enumKey.hasMoreElements())
         {
 			String key = enumKey.nextElement();
@@ -317,6 +322,7 @@ public class Bayespam
 			probs.put(key, prob);
 		}
 
+<<<<<<< HEAD
         
         
         
@@ -341,6 +347,8 @@ public class Bayespam
         		keyProbs.priori_spam = smallVal;
         }
         */
+=======
+>>>>>>> a78409b202d3b3aa7cfdd475a61cc7103aad3873
         /// ------- TESTING PHASE --------- ///
         
         dir_location = new File( args[1] );
@@ -384,7 +392,7 @@ public class Bayespam
         	if (testSpam.get(key).spamProb > testSpam.get(key).regularProb)
         		++correctSpam;
         }
-        System.out.println("\n" + itr + ": Percentage correct: " + ((double)(correctRegular+correctSpam)/count)*100 + "\n");
+        System.out.println("Percentage correct: " + ((double)(correctRegular+correctSpam)/count)*100 + "\n");
         System.out.println("Confusion matrix:\n");
         System.out.println("        |correct|\tfalse");
         System.out.println("-----------------------------");
@@ -397,5 +405,4 @@ public class Bayespam
         //
         // Use the same steps to create a class BigramBayespam which implements a classifier using a vocabulary consisting of bigrams
         }    
-    }
 }

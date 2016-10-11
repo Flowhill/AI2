@@ -1,7 +1,6 @@
 package bigramBayespam;
 
 import java.io.*;
-import java.sql.Struct;
 import java.util.*;
 
 public class BigramBayespam
@@ -70,7 +69,11 @@ public class BigramBayespam
             }
         }
     }
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> a78409b202d3b3aa7cfdd475a61cc7103aad3873
     /// Class for saving the probabilities of whether a message is a regular or a spam message
     static class MessageProbs
     {
@@ -163,6 +166,10 @@ public class BigramBayespam
     /// and then put into the vocabulary
     /// If the classifier is testing then similarly the words are parsed, however they are now used to calculate the probabilities of
     /// whether a message is a regular or a spam message.
+<<<<<<< HEAD
+=======
+
+>>>>>>> a78409b202d3b3aa7cfdd475a61cc7103aad3873
     private static void readMessages(MessageType type, SetType setType)
     throws IOException
     {
@@ -210,6 +217,10 @@ public class BigramBayespam
 		                		addTuple(pair, type); 			/// add two words as a bigram to the vocabulary
 		                    else
 		                    	testTable.get(i).calcMessageProb(pair); /// else calculate the probabilities the bigram adds to the message
+<<<<<<< HEAD
+=======
+
+>>>>>>> a78409b202d3b3aa7cfdd475a61cc7103aad3873
 	                	}
 	                    word = word2;
 	                }
@@ -224,7 +235,7 @@ public class BigramBayespam
     	// 2) The vocabulary must be clean: punctuation and digits must be removed, case insensitive
     	
     	/// Set the word size threshold
-    	int wordSizeThreshold = 4;
+    	int wordSizeThreshold = 6;
     	
     	if (word != null)
     	{
@@ -241,7 +252,7 @@ public class BigramBayespam
     public static void main(String[] args)
     throws IOException
     {
-        // Location of the directory (the path) taken from the cmd line (first arg)
+    	// Location of the directory (the path) taken from the cmd line (first arg)
         File dir_location = new File( args[0] );
         
         // Check if the cmd line arg is a directory
@@ -253,13 +264,17 @@ public class BigramBayespam
 
         // Initialize the regular and spam lists
         listDirs(dir_location);
-
+        vocab.clear();
         // Read the e-mail messages
         readMessages(MessageType.NORMAL, SetType.TRAIN);
         readMessages(MessageType.SPAM, SetType.TRAIN);
 
         // Print out the hash table
+<<<<<<< HEAD
         //printVocab();
+=======
+        printVocab();
+>>>>>>> a78409b202d3b3aa7cfdd475a61cc7103aad3873
         
         // Now all students must continue from here:
         //
@@ -282,7 +297,7 @@ public class BigramBayespam
         double nBigramsSpam 		= 0;
         
         /// Set the bigram removal threshold
-        int bigramThreshold = 2;
+        int bigramThreshold = 8;
         
         Enumeration<java.util.Map.Entry<String,String>> enumKey = vocab.keys();
         
@@ -299,14 +314,13 @@ public class BigramBayespam
         	nBigramsSpam += vocab.get(key).counter_spam;
         	}
         }
+        
+        printVocab();
+        
         double nBigramsTotal = nBigramsRegular + nBigramsSpam;
-        System.out.println("number of regular Bigrams : " + nBigramsRegular);
-        System.out.println("number of spam Bigrams    : " + nBigramsSpam);
         
         enumKey = vocab.keys();
-        for (double itr = 0.1; itr <= 1; itr += 0.1)
-        {
-        	double smallVal = itr / (nBigramsRegular + nBigramsSpam);
+        	double smallVal = 1 / (nBigramsRegular + nBigramsSpam);
 	        while (enumKey.hasMoreElements())
 	        {
 	        	java.util.Map.Entry<String,String> key = enumKey.nextElement();
@@ -336,6 +350,10 @@ public class BigramBayespam
 				probs.put(key, prob);
 			}
         
+<<<<<<< HEAD
+=======
+
+>>>>>>> a78409b202d3b3aa7cfdd475a61cc7103aad3873
 	        /// ------- TESTING PHASE --------- ///
 	        
 	        dir_location = new File( args[1] );
@@ -379,7 +397,7 @@ public class BigramBayespam
 	        	if (testSpam.get(key).spamProb > testSpam.get(key).regularProb)
 	        		++correctSpam;
 	        }
-	        System.out.println("\n" + itr + ": Percentage correct: " + ((double)(correctRegular+correctSpam)/count)*100 + "\n");
+	        System.out.println("\n" +  ": Percentage correct: " + ((double)(correctRegular+correctSpam)/count)*100 + "\n");
 	        System.out.println("Confusion matrix:\n");
 	        System.out.println("        |correct|\tfalse");
 	        System.out.println("-----------------------------");
@@ -389,6 +407,11 @@ public class BigramBayespam
 	        // 7) Errors must be computed on the test set (FAR = false accept rate (misses), FRR = false reject rate (false alarms))
 	        
 	        // 8) Improve the code and the performance (speed, accuracy)
+<<<<<<< HEAD
         }    
+=======
+
+        //}    
+>>>>>>> a78409b202d3b3aa7cfdd475a61cc7103aad3873
     }
 }

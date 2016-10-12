@@ -80,8 +80,6 @@ public class KMeans extends ClusteringAlgorithm
     // Step 3: recalculate cluster centers
     // Step 4: repeat until clustermembership stabilizes
     
-    boolean stable = false;
-    
     // Step 1
     Random rand = new Random();                         /// Create a random number generator
     for (int i = 0; i < trainData.size(); ++i)          /// Loop from 0 to the last user
@@ -90,11 +88,13 @@ public class KMeans extends ClusteringAlgorithm
     }
     
     /// For all clusters calculate its mean
-    for (int i = 0; i < k; ++i) clusters[k].prototype = calculatePrototype(k);
+    for (int i = 0; i < k; ++i) clusters[i].prototype = calculatePrototype(i);
     
     // Step 4
+    boolean stable = false; /// Assume the situation is unstable
     while (!stable)
     {
+      stable = true; /// Now assume the situation to be stable
       // Step 2
       /// For every member in the trainingset choose it's closest prototype
       for(int member = 0; member < trainData.size(); ++member)
@@ -142,32 +142,38 @@ public class KMeans extends ClusteringAlgorithm
 	public boolean test()
 	{
     int memberCluster = -1, hitrate, accuracy;
-    
+    int prefetches, hits, requests;
+    prefetches = hits = requests = 0;
     // iterate along all clients. Assumption: the same clients are in the same order as in the testData
     for (int member = 0; member < trainData.size(); ++member)
     {
-      int hits = 0;
       // for each client find the cluster of which it is a member
       for (int currentCluster = 0; currentCluster < k; ++currentCluster) 
         if (clusters[currentCluster].currentMembers.contains(member)) memberCluster = currentCluster;
-            
-      // get the actual testData (the vector) of this client
-      // iterate along all dimensions
-      // and count prefetched htmls
-      // count number of hits
-      // count number of requests
-      for (int value = 0; value < 200; ++value)
+
+      float[] prototype = clusters[memberCluster].prototype;
+      float[] datapoint = testData.get(member); // get the actual testData (the vector) of this client
+      boolean a, b;
+      for (int value = 0; value < 200; ++value) // iterate along all dimensions
       {
-        if (testData.get(member)[value] == clusters[memberCluster].prototype[value])
-        {
-          ++hits;
-        }
+        a = datapoint[value] == 1;
+        b = prototype[value] >= prefetchThreshold;
+        if (b) prefetches++;  // and count prefetched htmls
+        if (a & b) hits++;    // count number of hits
+        if (a) requests++;    // count number of requests
       }
-
-      // set the global variables hitrate and accuracy to their appropriate value
     }
-		
-
+		// set the global variables hitrate and accuracy to their appropriate value
+    this.hitrate = (double) hits / (double) requests;
+    this.accuracy = (double) hits / (double) prefetches;
+    /*
+    System.out.println("");
+    System.out.println("Prefetch threshold = " + this.prefetchThreshold);
+    System.out.println("Hitrate: " + this.hitrate);
+    System.out.println("Accuracy: " + this.accuracy);
+    System.out.println("Hitrate + Accuracy = " + (this.hitrate + this.accuracy));
+    System.out.println("");
+    */
 		return true;
 	}
 

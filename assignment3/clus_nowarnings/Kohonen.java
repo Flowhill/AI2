@@ -68,42 +68,59 @@ public class Kohonen extends ClusteringAlgorithm
 	public boolean train()
 	{
 		// Step 1: initialize map with random vectors (A good place to do this, is in the initialisation of the clusters)
-		double squareSize, learningRate;
+		float squareSize, learningRate;
 		// Repeat 'epochs' times:
+    System.out.print("Progress Bar: [");
 		for (int currentEpoch = 0; currentEpoch < epochs; ++currentEpoch)
 		{
 			// Step 2: Calculate the squareSize and the learningRate, these decrease lineary with the number of epochs.
-			squareSize = (n / 2) * (1 - (currentEpoch / (double) epochs));
-			learningRate = 0.8 * (1 - (currentEpoch / (double) epochs));
+			squareSize = (n / 2) * (1 - (currentEpoch / (float) epochs));
+			learningRate = (float) 0.8 * (1 - (currentEpoch / (float) epochs));
 			// Step 3: Every input vector is presented to the map (always in the same order)
 		      for(int input = 0; input < trainData.size(); ++input)
 		      {
-		        int BMUx, BMUy;
+		        int BMUx = -1, BMUy = -1;
 		        double smallestDist = Double.POSITIVE_INFINITY;
 		        for (int i1 = 0; i1 < n; ++i1)
 		        {
 		        	for (int i2 = 0; i2 < n; ++i2)
 		        	{
 		        		double distance = 0; /// Set the distance at 0, it will be incremented
-						/// Calculate the Euclidean distance
-						for (int value = 0; value < 200; ++value)
-							distance += Math.pow(trainData.get(input)[value] - clusters[i1][i2].prototype[value], 2);
-						distance = Math.sqrt(distance);
-						  /// Is the calculated distance the smallest? if so: alter the best cluster choice
-						if (distance < smallestDist) 
-						{
-							BMUy = i1; 	/// Alter the best cluster choice
-							BMUx = i2;
-							smallestDist = distance;    /// Set the new smallest distance
-						}	
+                /// Calculate the Euclidean distance
+                for (int value = 0; value < 200; ++value)
+                  distance += Math.pow(trainData.get(input)[value] - clusters[i1][i2].prototype[value], 2);
+                distance = Math.sqrt(distance);
+                  /// Is the calculated distance the smallest? if so: alter the best cluster choice
+                if (distance < smallestDist) 
+                {
+                  BMUy = i1; 	/// Alter the best cluster choice
+                  BMUx = i2;
+                  smallestDist = distance;    /// Set the new smallest distance
+                }	
 		        	}
 		        }
+            // For each vector its Best Matching Unit is found, and :
 		        clusters[BMUy][BMUx].currentMembers.add(input);
+            // Step 4: All nodes within the neighbourhood of the BMU are changed, you don't have to use distance relative learning.
+            for (int yCoor = BMUy - (int) squareSize; yCoor < BMUy + squareSize; ++yCoor)
+            {
+              if (yCoor < 0) yCoor = 0;
+              if (yCoor >= n) break;
+              for (int xCoor = BMUx - (int) squareSize; xCoor < BMUx + squareSize; ++xCoor)
+              {
+                if (xCoor < 0) xCoor = 0;
+                if (xCoor >= n) break;
+                for (int value = 0; value < dim; ++value)
+                  clusters[yCoor][xCoor].prototype[value] = (1 - learningRate) * clusters[yCoor][xCoor].prototype[value] + learningRate * trainData.get(input)[value];
+                
+              }
+            }
 		      }
-			// For each vector its Best Matching Unit is found, and :
-				// Step 4: All nodes within the neighbourhood of the BMU are changed, you don't have to use distance relative learning.
-		// Since training kohonen maps can take quite a while, presenting the user with a progress bar would be nice
+      // Since training kohonen maps can take quite a while, presenting the user with a progress bar would be nice
+      if (currentEpoch % (epochs / 20) == 0) System.out.print("-|");
 		}
+    System.out.print("-]");
+    System.out.println();
 		return true;
 	}
 	

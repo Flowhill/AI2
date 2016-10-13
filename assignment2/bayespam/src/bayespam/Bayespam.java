@@ -229,7 +229,11 @@ public class Bayespam
         readMessages(MessageType.SPAM, SetType.TRAIN);
 
         // Print out the hash table
+<<<<<<< HEAD
+        //printVocab(); 
+=======
          
+>>>>>>> a78409b202d3b3aa7cfdd475a61cc7103aad3873
 
         // Now all students must continue from here:
         //
@@ -318,6 +322,33 @@ public class Bayespam
 			probs.put(key, prob);
 		}
 
+<<<<<<< HEAD
+        
+        
+        
+
+        
+        /*enumKey = probs.keys();
+        
+        while (enumKey.hasMoreElements())
+        {
+        	String key = enumKey.nextElement();
+        	Multiple_Prob keyProbs = probs.get(key);
+        	if (keyProbs.conditional_regular == 0.0)
+        		keyProbs.conditional_regular = smallVal;
+        	
+        	if (keyProbs.conditional_spam == 0.0)
+        		keyProbs.conditional_spam = smallVal;
+        	
+        	if (keyProbs.priori_regular == 0.0)
+        		keyProbs.priori_regular = smallVal;
+        	
+        	if (keyProbs.priori_spam == 0)
+        		keyProbs.priori_spam = smallVal;
+        }
+        */
+=======
+>>>>>>> a78409b202d3b3aa7cfdd475a61cc7103aad3873
         /// ------- TESTING PHASE --------- ///
         
         dir_location = new File( args[1] );

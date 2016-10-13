@@ -69,7 +69,11 @@ public class BigramBayespam
             }
         }
     }
+<<<<<<< HEAD
+        
+=======
 
+>>>>>>> a78409b202d3b3aa7cfdd475a61cc7103aad3873
     /// Class for saving the probabilities of whether a message is a regular or a spam message
     static class MessageProbs
     {
@@ -162,7 +166,10 @@ public class BigramBayespam
     /// and then put into the vocabulary
     /// If the classifier is testing then similarly the words are parsed, however they are now used to calculate the probabilities of
     /// whether a message is a regular or a spam message.
+<<<<<<< HEAD
+=======
 
+>>>>>>> a78409b202d3b3aa7cfdd475a61cc7103aad3873
     private static void readMessages(MessageType type, SetType setType)
     throws IOException
     {
@@ -210,7 +217,10 @@ public class BigramBayespam
 		                		addTuple(pair, type); 			/// add two words as a bigram to the vocabulary
 		                    else
 		                    	testTable.get(i).calcMessageProb(pair); /// else calculate the probabilities the bigram adds to the message
+<<<<<<< HEAD
+=======
 
+>>>>>>> a78409b202d3b3aa7cfdd475a61cc7103aad3873
 	                	}
 	                    word = word2;
 	                }
@@ -260,7 +270,11 @@ public class BigramBayespam
         readMessages(MessageType.SPAM, SetType.TRAIN);
 
         // Print out the hash table
+<<<<<<< HEAD
+        //printVocab();
+=======
         printVocab();
+>>>>>>> a78409b202d3b3aa7cfdd475a61cc7103aad3873
         
         // Now all students must continue from here:
         //
@@ -336,7 +350,10 @@ public class BigramBayespam
 				probs.put(key, prob);
 			}
         
+<<<<<<< HEAD
+=======
 
+>>>>>>> a78409b202d3b3aa7cfdd475a61cc7103aad3873
 	        /// ------- TESTING PHASE --------- ///
 	        
 	        dir_location = new File( args[1] );
@@ -390,7 +407,11 @@ public class BigramBayespam
 	        // 7) Errors must be computed on the test set (FAR = false accept rate (misses), FRR = false reject rate (false alarms))
 	        
 	        // 8) Improve the code and the performance (speed, accuracy)
+<<<<<<< HEAD
+        }    
+=======
 
         //}    
+>>>>>>> a78409b202d3b3aa7cfdd475a61cc7103aad3873
     }
 }

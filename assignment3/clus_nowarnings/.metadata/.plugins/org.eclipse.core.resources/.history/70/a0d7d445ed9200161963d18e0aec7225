@@ -141,9 +141,6 @@ public class KMeans extends ClusteringAlgorithm
 
 	public boolean test()
 	{
-		for (double itrThreshold = 0.1; itrThreshold <= 1; itrThreshold += 0.1)
-		{
-			prefetchThreshold = itrThreshold;
     int memberCluster = -1, hitrate, accuracy;
     int prefetches, hits, requests;
     prefetches = hits = requests = 0;
@@ -177,7 +174,6 @@ public class KMeans extends ClusteringAlgorithm
     System.out.println("Hitrate + Accuracy = " + (this.hitrate + this.accuracy));
     System.out.println("");
     */
-		}
 		return true;
 	}
 

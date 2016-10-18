@@ -134,11 +134,11 @@ public class Kohonen extends ClusteringAlgorithm
 	
 	public boolean test()
 	{
-		for (double itrThreshold = 0.1; itrThreshold <= 1; itrThreshold += 0.1)
-		{
-			prefetchThreshold = itrThreshold;
+		//for (double itrThreshold = 0.1; itrThreshold <= 1; itrThreshold += 0.1)
+		//{
+			//prefetchThreshold = itrThreshold;
 		int prefetches, hits, requests;
-	    prefetches = hits = requests = 0;
+    prefetches = hits = requests = 0;
 		// iterate along all clients
 		for (int input = 0; input < trainData.size(); ++input)
 		{
@@ -167,7 +167,8 @@ public class Kohonen extends ClusteringAlgorithm
 		// set the global variables hitrate and accuracy to their appropriate value
 	    this.hitrate = (double) hits / (double) requests;
 	    this.accuracy = (double) hits / (double) prefetches;
-		}
+      //showTest();
+		//}
 		return true;
 	}
 

@@ -141,9 +141,9 @@ public class KMeans extends ClusteringAlgorithm
 
 	public boolean test()
 	{
-		for (double itrThreshold = 0.1; itrThreshold <= 1; itrThreshold += 0.1)
-		{
-			prefetchThreshold = itrThreshold;
+		//for (double itrThreshold = 0.1; itrThreshold <= 1; itrThreshold += 0.1)
+		//{
+			//prefetchThreshold = itrThreshold;
     int memberCluster = -1, hitrate, accuracy;
     int prefetches, hits, requests;
     prefetches = hits = requests = 0;
@@ -169,15 +169,10 @@ public class KMeans extends ClusteringAlgorithm
 		// set the global variables hitrate and accuracy to their appropriate value
     this.hitrate = (double) hits / (double) requests;
     this.accuracy = (double) hits / (double) prefetches;
-    /*
-    System.out.println("");
-    System.out.println("Prefetch threshold = " + this.prefetchThreshold);
-    System.out.println("Hitrate: " + this.hitrate);
-    System.out.println("Accuracy: " + this.accuracy);
-    System.out.println("Hitrate + Accuracy = " + (this.hitrate + this.accuracy));
-    System.out.println("");
-    */
-		}
+    
+    //showTest();
+    
+		//}
 		return true;
 	}
 

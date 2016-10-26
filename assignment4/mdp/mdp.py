@@ -43,26 +43,29 @@ class Map :
 
     ### you write this method
     def valueIteration(self) :
-        runTime = time.time()
+        runTime = time.time()                                     #Keep track of the time
         ### 1. initialize utilities to 0
-        for i in range(self.n_cols) :
+        for i in range(self.n_cols) :                             #Iterate over all states
             for j in range(self.n_rows) :
-                if (self.states[(i,j)].isGoal == False):
-                    self.states[(i,j)].utility = 0;
+                if (self.states[(i,j)].isGoal == False):          #If the state is not a goal
+                    self.states[(i,j)].utility = 0;               #Set its utility to 0
         largestChange = 1;
+        iterations = 0;
         ### 2. repeat value iteration loop until largest change is smaller than
         ###    stop criterion
         while (largestChange > self.stop_crit):
-            largestChange = 0;
-            for i in range(self.n_cols) :
+            iterations += 1;
+            largestChange = 0;                                    #Indicate that there has been no change yet
+            for i in range(self.n_cols) :                         #Iterate over all states
                 for j in range(self.n_rows) :
-                    if (self.states[(i,j)].isGoal == False):
-                        oldUtility = self.states[(i,j)].utility;
-                        action = State.selectBestAction(self.states[(i,j)]);
+                    if (self.states[(i,j)].isGoal == False):      #If the state is not a goal
+                        oldUtility = self.states[(i,j)].utility;  #Save the old Utility
+                        action = State.selectBestAction(self.states[(i,j)]);  #Select the best action for the current state
+                        #Calculate the new utility and update
                         self.states[(i,j)].utility = self.states[(i,j)].reward + self.gamma * State.computeEU(self.states[(i,j)], action);
-                        if self.states[(i,j)].utility - oldUtility > largestChange:
-                            largestChange = self.states[(i,j)].utility - oldUtility;
-        print 'Runtime is:', time.time() - runTime;
+                        if self.states[(i,j)].utility - oldUtility > largestChange:   #if the change is bigger than the last:
+                            largestChange = self.states[(i,j)].utility - oldUtility;  #alter the largest change
+        print 'iterations:', iterations, 'Runtime is:', time.time() - runTime;
         
     ### you write this method
     def policyIteration(self) :
